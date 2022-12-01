@@ -1,29 +1,38 @@
-record Point3D {
+using System.Numerics;
 
-    public decimal x {get; init;}
-    public decimal y {get; init;}
-    public decimal z {get; init;}
+record Point3D<T> where T: INumber<T> {
 
-    public Point3D(decimal x, decimal y, decimal z) {
+    public T x {get; init;}
+    public T y {get; init;}
+    public T z {get; init;}
+
+    public Point3D(T x, T y, T z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public static Point3D operator +(Point3D p1, Point3D p2) {
-        return new Point3D(p1.x + p2.x, p1.y + p2.y, p1.z + p2.z);
+    public Point3D(string x, string y, string z) {
+        this.x = T.Parse(x, null);
+        this.y = T.Parse(y, null);
+        this.z = T.Parse(z, null);
     }
 
-    public static Point3D operator *(Point3D p1, decimal scalar) {
-        return new Point3D(p1.x * scalar, p1.y * scalar, p1.z * scalar);
+
+    public static Point3D<T> operator +(Point3D<T> p1, Point3D<T> p2) {
+        return new Point3D<T>(p1.x + p2.x, p1.y + p2.y, p1.z + p2.z);
     }
 
-    public static Point3D operator -(Point3D p1, Point3D p2) {
-        return new Point3D(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
+    public static Point3D<T> operator *(Point3D<T> p1, T scalar) {
+        return new Point3D<T>(p1.x * scalar, p1.y * scalar, p1.z * scalar);
+    }
+
+    public static Point3D<T> operator -(Point3D<T> p1, Point3D<T> p2) {
+        return new Point3D<T>(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
     }
     
-    public decimal ManhattanDistance(Point3D p) {
-        return Math.Abs(this.x - p.x) + Math.Abs(this.y - p.y) +  Math.Abs(this.z - p.z);
+    public T ManhattanDistance(Point3D<T> p) {
+        return T.Abs(this.x - p.x) + T.Abs(this.y - p.y) +  T.Abs(this.z - p.z);
     }
 
     public override string ToString(){
@@ -31,16 +40,3 @@ record Point3D {
     }   
 }
 
-record Point3DRecord(int x, int y, int z){
-    public static Point3DRecord operator -(Point3DRecord p1, Point3DRecord p2) {
-        return new Point3DRecord(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
-    }   
-
-    public static Point3DRecord operator +(Point3DRecord p1, Point3DRecord p2) {
-        return new Point3DRecord(p2.x + p1.x, p2.y + p1.y, p2.z + p1.z);
-    }       
-
-    public int ManhattanDistance(Point3DRecord p) {
-        return Math.Abs(this.x - p.x) + Math.Abs(this.y - p.y) +  Math.Abs(this.z - p.z);
-    } 
-}

@@ -1,39 +1,42 @@
-record Point2D {
-    public decimal x {get; init;}
-    public decimal y {get; init;}
+using System.Numerics;
 
-    public Point2D(decimal x, decimal y) {
+record Point2D <T> where T : INumber<T> {
+    public T x {get; init;}
+    public T y {get; init;}
+
+    public Point2D(T x, T y) {
         this.x = x;
         this.y = y;
     }
 
     public Point2D(string x, string y) {
-        this.x = decimal.Parse(x);
-        this.y = decimal.Parse(y);
+        this.x = T.Parse(x, null);
+        this.y = T.Parse(y, null);
     }    
 
-    public static Point2D operator -(Point2D p1, Point2D p2) => new Point2D(p1.x - p2.x, p1.y - p2.y);
-    public static Point2D operator +(Point2D p1, Point2D p2) => new Point2D(p1.x + p2.x, p1.y + p2.y);
-    public static Point2D operator *(Point2D p1, Point2D p2) => new Point2D(p1.x * p2.x, p1.y * p2.y);
-    public static Point2D operator *(Point2D p1, decimal m) => new Point2D(p1.x * m, p1.y * m);
+    public static Point2D<T> operator -(Point2D<T> p1, Point2D<T> p2) => new Point2D<T>(p1.x - p2.x, p1.y - p2.y);
+    public static Point2D<T> operator +(Point2D<T> p1, Point2D<T> p2) => new Point2D<T>(p1.x + p2.x, p1.y + p2.y);
+    public static Point2D<T> operator *(Point2D<T> p1, Point2D<T> p2) => new Point2D<T>(p1.x * p2.x, p1.y * p2.y);
+    public static Point2D<T> operator *(Point2D<T> p1, T m) => new Point2D<T>(p1.x * m, p1.y * m);
 
-    public List<Point2D> GenerateAdjacent(bool includeDiagonal = false, bool includePoint = false) {
-        var result = new List<Point2D>();
-        if(includeDiagonal) result.Add(new (x - 1, y - 1));
-        result.Add(new (x - 1, y));
-        if(includeDiagonal) result.Add(new (x - 1, y + 1));
+    public List<Point2D<T>> GenerateAdjacent(bool includeDiagonal = false, bool includePoint = false) {
+        var result = new List<Point2D<T>>();
+
+        if(includeDiagonal) result.Add(new Point2D<T>(-T.One,-T.One));
+        result.Add(new (-T.One, T.Zero));
+        if(includeDiagonal) result.Add(new (-T.One, T.One));
         
-        result.Add(new (x, y - 1));
+        result.Add(new (T.Zero, -T.One));
         if(includePoint) result.Add(this);
-        result.Add(new (x, y + 1));
+        result.Add(new (T.Zero, -T.One));
 
-        if(includeDiagonal) result.Add(new (x + 1, y - 1));
-        result.Add(new (x + 1, y));
-        if(includeDiagonal) result.Add(new (x + 1, y + 1));
+        if(includeDiagonal) result.Add(new (T.One, -T.One));
+        result.Add(new (T.One, T.Zero));
+        if(includeDiagonal) result.Add(new (T.One, T.One));
 
-        return result;
+        return result.Select(r => this + r).ToList();
     }
 
-    public decimal ManhattanDistance(Point2D p) => Math.Abs(this.x - p.x) + Math.Abs(this.y - p.y);
-    public decimal CrossProduct(Point2D p) => this.x * p.y - this.y * p.x;
+    public T ManhattanDistance(Point2D<T> p) => T.Abs(this.x - p.x) + T.Abs(this.y - p.y);
+    public T CrossProduct(Point2D<T> p) => this.x * p.y - this.y * p.x;
 }
