@@ -45,32 +45,6 @@ class Day09 : IDayCommand
     return $"The 2nd knot visited {positionsTailVisitedPart01.Count()} positions and the 10th knot visited {positionsTailVisitedPart02.Count()}";
   }
 
-  private void Print(Point2D<int> tail, Point2D<int> head)
-  {
-    var minX = Math.Min(tail.x, head.x) - 2;
-    var maxX = Math.Max(tail.x, head.x) + 2;
-    var minY = Math.Min(tail.y, head.y) - 2; 
-    var maxY = Math.Max(tail.y, head.y) + 2;
-
-    for (int y = minY; y <= maxY; y++)
-    { 
-      for (int x = minX; x <= maxX; x++)
-      {
-        if(head.x == x && head.y == y)
-        {
-          Console.Write("H"); continue;
-        }
-        if(tail.x == x && tail.y == y)
-        {
-          Console.Write("T"); continue;
-        }
-        Console.Write(".");
-      }      
-      Console.WriteLine();
-    }
-    Console.WriteLine();
-  }
-
   private Point2D<int> GetMovementDistance(char direction)
   {
     return direction switch {
