@@ -8,28 +8,41 @@ class Day09 : IDayCommand
         return (direction: splitted[0][0], steps: int.Parse(splitted[1]));
       })
       .ToList();
+    
+    var knots = Enumerable.Repeat(new Point2D<int>(0,0), 10).ToArray();
 
-    var headPosition = new Point2D<int>(0,0);
-    var tailPosition = new Point2D<int>(0,0);
-    var positionsTailVisited = new HashSet<Point2D<int>>();
+    var positionsTailVisitedPart01 = new HashSet<Point2D<int>>();
+    var positionsTailVisitedPart02 = new HashSet<Point2D<int>>();
 
     foreach (var movement in movements)
     {
       var movementDistance = GetMovementDistance(movement.direction);
       for (int step = 0; step < movement.steps; step++)
-      {        
-        headPosition += movementDistance;
-        var diffX = headPosition.x - tailPosition.x;
-        var diffY = headPosition.y - tailPosition.y;
-        if(Math.Abs(diffX) >= 2 || Math.Abs(diffY) >= 2)
+      {
+        // Update Head        
+        knots[0] += movementDistance;
+        // Update Knots
+        for (int i = 1; i < knots.Length; i++)
         {
-          tailPosition = tailPosition + new Point2D<int>(Math.Sign(diffX), Math.Sign(diffY));
+          var diffX = knots[i-1].x - knots[i].x;
+          var diffY = knots[i-1].y - knots[i].y;
+          if(Math.Abs(diffX) >= 2 || Math.Abs(diffY) >= 2)
+          {
+            knots[i] = knots[i] + new Point2D<int>(Math.Sign(diffX), Math.Sign(diffY));
+          }          
+          if(i == 1)
+          {
+            positionsTailVisitedPart01.Add(knots[i]);
+          }
+          if(i == knots.Length - 1)
+          {
+            positionsTailVisitedPart02.Add(knots[i]);
+          }
         }
-        positionsTailVisited.Add(tailPosition);
       }
     }
 
-    return $"The tail visited {positionsTailVisited.Count()} positions";
+    return $"The 2nd knot visited {positionsTailVisitedPart01.Count()} positions and the 10th knot visited {positionsTailVisitedPart02.Count()}";
   }
 
   private void Print(Point2D<int> tail, Point2D<int> head)
