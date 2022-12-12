@@ -18,9 +18,6 @@ class Day12 : IDayCommand
       var toRemove = node.AdjacentNodes.Where(adj => (adj.Value - node.Value) > 1).ToList();
       toRemove.ForEach(nodeToRemove => node.AdjacentNodes.Remove(nodeToRemove));
     });
-
-    // Set the travel cost to a fixed value (1)
-    map.Nodes.ToList().ForEach(node => node.GetTravelCost = (current, adjacent) => 1);
     
     // Part 01
     var fewestStepsPathPart1 = map.GetOptimalPath(startingPositionPart1, endPosition).Count() - 1;
