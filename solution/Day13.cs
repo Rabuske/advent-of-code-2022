@@ -55,7 +55,7 @@ class PacketComparer : IComparer<List<Object>>
       currentIndex++;
     }
   }
-}
+} 
 
 class Day13 : IDayCommand
 {
