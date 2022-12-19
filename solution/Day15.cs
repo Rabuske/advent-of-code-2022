@@ -91,11 +91,11 @@ class Day15 : IDayCommand
     var radius = sensor.coord.ManhattanDistance(sensor.nearestBeacon);
     var yComponent = Math.Abs(sensor.coord.y - rowNumber);
 
-    if(yComponent > radius) return (new Point2D<int>(0,0), new Point2D<int>(0,0), false);
+    if (yComponent > radius) return (new Point2D<int>(0, 0), new Point2D<int>(0, 0), false);
 
     var missingXComponent = radius - yComponent;
     var x1 = sensor.coord.x - missingXComponent;
     var x2 = sensor.coord.x + missingXComponent;
-    return (start: new Point2D<int>(Math.Min(x1,x2), rowNumber), end: new Point2D<int>(Math.Max(x2, x1), rowNumber), true);
+    return (start: new Point2D<int>(Math.Min(x1, x2), rowNumber), end: new Point2D<int>(Math.Max(x2, x1), rowNumber), true);
   }
 }
