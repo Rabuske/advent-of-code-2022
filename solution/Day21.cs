@@ -3,30 +3,29 @@ using TwoDigitOperation = System.Func<System.Numerics.BigInteger, System.Numeric
 
 class MonkeyDay21
 {
-  public String Id {get; set;} = string.Empty;
-  public BigInteger YellingContent {get; set;} = int.MinValue; 
-  
-  public string DependencyLeft {get; set;} = string.Empty;
-  public string DependencyRight {get; set;} = string.Empty;
-  public Dictionary<string, TwoDigitOperation> Operations {get; set;} = new();
+  public String Id { get; set; } = string.Empty;
+  public BigInteger YellingContent { get; set; } = int.MinValue;
+  public string DependencyLeft { get; set; } = string.Empty;
+  public string DependencyRight { get; set; } = string.Empty;
+  public Dictionary<string, TwoDigitOperation> Operations { get; set; } = new();
 
   public virtual bool TryComputeYellingContent(Dictionary<string, MonkeyDay21> monkeys, out BigInteger content)
   {
     content = YellingContent;
-    if(YellingContent != int.MinValue)
+    if (YellingContent != int.MinValue)
     {
       return true;
     }
     var canComputeLeft = monkeys[DependencyLeft].TryComputeYellingContent(monkeys, out var valueLeft);
     var canComputeRight = monkeys[DependencyRight].TryComputeYellingContent(monkeys, out var valueRight);
-    if(!canComputeLeft || !canComputeRight) return false;
+    if (!canComputeLeft || !canComputeRight) return false;
     content = Operations["do"](valueLeft, valueRight);
     return true;
   }
 
   public virtual BigInteger ComputeMissingValue(BigInteger wantedValue, Dictionary<string, MonkeyDay21> monkeys)
   {
-    if(YellingContent != int.MinValue) 
+    if (YellingContent != int.MinValue)
     {
       return YellingContent;
     }
@@ -34,13 +33,13 @@ class MonkeyDay21
     var canComputeLeft = monkeys[DependencyLeft].TryComputeYellingContent(monkeys, out var valueLeft);
     var canComputeRight = monkeys[DependencyRight].TryComputeYellingContent(monkeys, out var valueRight);
 
-    if(!canComputeLeft)
+    if (!canComputeLeft)
     {
       var expectedValue = Operations["undoLeft"](wantedValue, valueRight);
       return monkeys[DependencyLeft].ComputeMissingValue(expectedValue, monkeys);
     }
 
-    if(!canComputeRight)
+    if (!canComputeRight)
     {
       var expectedValue = Operations["undoRight"](wantedValue, valueLeft);
       return monkeys[DependencyRight].ComputeMissingValue(expectedValue, monkeys);
@@ -68,19 +67,18 @@ class Day21 : IDayCommand
   public string Execute()
   {
     Dictionary<string, MonkeyDay21> monkeys = Parse(new FileReader(21).Read());
-    
 
     // Part 01
     monkeys["root"].TryComputeYellingContent(monkeys, out var rootYells);
 
     // Part 02
-    monkeys["humn"] = new FakeMonkey(){};
+    monkeys["humn"] = new FakeMonkey() { };
     var rootMonkey = monkeys["root"];
 
-    var canComputeRight = monkeys[rootMonkey.DependencyRight].TryComputeYellingContent(monkeys, out var knownValueForRootRight);      
-    var canComputeLeft = monkeys[rootMonkey.DependencyLeft].TryComputeYellingContent(monkeys, out var knownValueForRootLeft);      
-    var knownValue = canComputeRight? knownValueForRootRight : knownValueForRootLeft;
-    var unknownPathStartMonkey = canComputeRight? rootMonkey.DependencyLeft : rootMonkey.DependencyRight;
+    var canComputeRight = monkeys[rootMonkey.DependencyRight].TryComputeYellingContent(monkeys, out var knownValueForRootRight);
+    var canComputeLeft = monkeys[rootMonkey.DependencyLeft].TryComputeYellingContent(monkeys, out var knownValueForRootLeft);
+    var knownValue = canComputeRight ? knownValueForRootRight : knownValueForRootLeft;
+    var unknownPathStartMonkey = canComputeRight ? rootMonkey.DependencyLeft : rootMonkey.DependencyRight;
     var missingValue = monkeys[unknownPathStartMonkey].ComputeMissingValue(knownValue, monkeys);
 
     return $"Root yells {rootYells}. I should yell {missingValue}";
@@ -111,7 +109,7 @@ class Day21 : IDayCommand
         {"do", (left, right) => left - right},
         {"undoLeft", (wanted, right) => wanted + right },
         {"undoRight", (wanted, left) => left - wanted},
-      };      
+      };
 
       var multiplication = new Dictionary<string, TwoDigitOperation>()
       {
@@ -125,7 +123,7 @@ class Day21 : IDayCommand
         {"do", (left, right) => left / right},
         {"undoLeft", (wanted, right) => wanted * right },
         {"undoRight", (wanted, left) => left / wanted},
-      };                 
+      };
 
       Dictionary<string, TwoDigitOperation> operations = nameAndContent[1].Trim()[5] switch
       {
