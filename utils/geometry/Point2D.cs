@@ -19,20 +19,19 @@ record Point2D <T> where T : INumber<T> {
     public static Point2D<T> operator *(Point2D<T> p1, Point2D<T> p2) => new Point2D<T>(p1.x * p2.x, p1.y * p2.y);
     public static Point2D<T> operator *(Point2D<T> p1, T m) => new Point2D<T>(p1.x * m, p1.y * m);
 
-    public List<Point2D<T>> GenerateAdjacent(bool includeDiagonal = false, bool includePoint = false) {
+    public List<Point2D<T>> GenerateAdjacent(bool includeDiagonals = false, bool includeItself = false) {
         var result = new List<Point2D<T>>();
-
-        if(includeDiagonal) result.Add(new Point2D<T>(-T.One,-T.One));
-        result.Add(new (-T.One, T.Zero));
-        if(includeDiagonal) result.Add(new (-T.One, T.One));
         
+        if(includeDiagonals) result.Add(new Point2D<T>(-T.One,-T.One));
         result.Add(new (T.Zero, -T.One));
-        if(includePoint) result.Add(this);
-        result.Add(new (T.Zero, -T.One));
-
-        if(includeDiagonal) result.Add(new (T.One, -T.One));
+        if(includeDiagonals) result.Add(new (T.One, -T.One));
         result.Add(new (T.One, T.Zero));
-        if(includeDiagonal) result.Add(new (T.One, T.One));
+        if(includeDiagonals) result.Add(new (T.One, T.One));
+        result.Add(new (T.Zero, T.One));
+        if(includeDiagonals) result.Add(new (-T.One, T.One));
+        result.Add(new (-T.One, T.Zero));
+
+        if(includeItself) result.Add(this);
 
         return result.Select(r => this + r).ToList();
     }
