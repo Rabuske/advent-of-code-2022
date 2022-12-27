@@ -31,7 +31,7 @@ record Point2D <T> where T : INumber<T> {
         if(includeDiagonals) result.Add(new (-T.One, T.One));
         result.Add(new (-T.One, T.Zero));
 
-        if(includeItself) result.Add(this);
+        if(includeItself) result.Add(new(T.Zero, T.Zero));
 
         return result.Select(r => this + r).ToList();
     }
